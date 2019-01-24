@@ -7,15 +7,14 @@ import javax.swing.*;
 public class Main {
 
     static Boolean tick = true;
+    public static Board board;
+    public static BoardDisplay frame;
 
     public static void main(String[] args) {
 
-        JFrame frame = MakeFrame(); 
-
-        Board board = new Board(10,20);
-        BoardDisplay boardDisplay = new BoardDisplay(board, frame);
-        frame.add(boardDisplay);
-        BoardControlsDisplay controls = new BoardControlsDisplay(frame);
+        board = new Board(10,20);
+        frame = MakeFrame(board); 
+        BoardControlsDisplay controls = new BoardControlsDisplay(frame,board);
 
         //boardDisplay.DrawBoard();
 
@@ -26,12 +25,12 @@ public class Main {
     }
 
     public static void OnTick() {
-        System.out.println(tick ? "Tick" : "Tock");
-        tick = !tick;
+        board.Tick();
+        frame.repaint();
     }
 
-    public static JFrame MakeFrame(){
-        JFrame f = new JFrame("Tetris");
+    public static BoardDisplay MakeFrame(Board b){
+        BoardDisplay f = new BoardDisplay(b,"Tetris");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(1024, 768);// 400 width and 500 height
         f.setLayout(null);// using no layout managers

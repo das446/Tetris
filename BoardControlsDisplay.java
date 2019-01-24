@@ -7,27 +7,31 @@ import javax.swing.*;
 public class BoardControlsDisplay{
 
     JFrame frame;
+    Board board;
 
-    public BoardControlsDisplay(JFrame f){
+    public BoardControlsDisplay(JFrame f, Board b){
         frame = f;
+        board = b;
     }
 
     public void MakeButtons(){
         JButton moveLeft = new JButton("<");// creating instance of JButton
-        moveLeft.setBounds(130, 100, 100, 40);// x axis, y axis, width, height
+        moveLeft.setBounds(600, 100, 100, 40);// x axis, y axis, width, height
         ActionListener left = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Move Left");
+                board.GetActivePiece().Move(Direction.Left);
+                frame.repaint();
             }
         };
         moveLeft.addActionListener(left);
 
         JButton moveRight = new JButton(">");// creating instance of JButton
-        moveRight.setBounds(260, 100, 100, 40);// x axis, y axis, width, height
+        moveRight.setBounds(800, 100, 100, 40);// x axis, y axis, width, height
 
          ActionListener right = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Move Right");
+                 board.GetActivePiece().Move(Direction.Right);
+                 frame.repaint();
             }
         };
         moveRight.addActionListener(right);

@@ -42,4 +42,8 @@ public class Pos {
             return Down();
         }
     }
+
+    public String ToString(){
+        return "(x="+x+", y="+y+")";
+    }
 }

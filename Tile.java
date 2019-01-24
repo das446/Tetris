@@ -1,5 +1,27 @@
+import java.awt.Color;
+
 public class Tile{
     Pos pos;
+    public Color color;
+
+    public Tile(Pos p, Color c){
+        pos = new Pos(p);
+        color = c;
+    }
+    public Tile(int x, int y, Color c){
+        pos = new Pos(x,y);
+        color = c;
+    }
+
+    public Tile(Pos p, Color c, Pos origin){
+        pos = origin.Offset(p);
+        color = c;
+    }
+    public Tile(int x, int y, Color c, Pos origin){
+        pos = new Pos(x+origin.x,y+origin.y);
+        color = c;
+    }
+
 
     public void SetPos(Pos p){
         pos.x = p.x;
@@ -21,8 +43,11 @@ public class Tile{
     }
 
     public void Move(Direction d){
-        Pos newPos = pos.Neighbor(d);
+        pos = pos.Neighbor(d);
+    }
 
+    public void Lock(){
+        
     }
 
     
