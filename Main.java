@@ -34,6 +34,7 @@ public class Main {
         JFrame f = new JFrame("Tetris");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(1024, 768);// 400 width and 500 height
+        f.setLayout(null);// using no layout managers
         f.setVisible(true);// making the frame visible
         return f;
     }
