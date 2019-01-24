@@ -174,10 +174,8 @@ public class Piece {
                     add = false;
                 }
             }
+            
 
-            if(add){
-                edge.add(t);
-            }
         }
 
         return edge;
@@ -189,20 +187,17 @@ public class Piece {
     }
 
     public Pos HardDropTarget(Board board) {
-        ArrayList<Tile> bottomRow = new ArrayList<Tile>();
-        for(){
-
-        }
+        ArrayList<Tile> edges = Edge(Direction.Down);
 
 
-        for (int i = 0; i < bottomRow.size(); i++) {
-            Tile t = bottomRow.get(i);
-            int y = t.GetPos().y;        
-            while(y>0){
-                if()
-            }
+        // for (int i = 0; i < bottomRow.size(); i++) {
+        //     Tile t = bottomRow.get(i);
+        //     int y = t.GetPos().y;        
+        //     while(y>0){
+                
+        //     }
 
-        }
+        // }
         return null;
     }
 

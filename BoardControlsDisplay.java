@@ -65,7 +65,6 @@ public class BoardControlsDisplay {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
             }
 
             @Override
@@ -75,7 +74,6 @@ public class BoardControlsDisplay {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                System.out.println("Key pressed code=" + e.getKeyCode() + ", char=" + e.getKeyChar());
                 if (e.getKeyCode() == 37) {
                     MoveLeft();
                 } else if (e.getKeyCode() == 39) {

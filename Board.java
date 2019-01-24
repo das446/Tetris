@@ -67,6 +67,10 @@ public class Board {
 
     }
 
+    public Boolean OutOfBounds(Pos p) {
+        return p.x < 0 || p.x >= width || p.y < 0 || p.y > height;
+    }
+
     public Piece GetActivePiece() {
         return activePiece;
     }
