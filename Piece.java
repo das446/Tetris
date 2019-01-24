@@ -23,6 +23,16 @@ public class Piece {
         return new Piece(t, p, b);
     }
 
+    public enum Type {
+        I, O, T, S, Z, J, L;
+
+        public static Type getRandomType() {
+            Random random = new Random();
+            return values()[random.nextInt(values().length)];
+        }
+
+    }
+
     public Piece(Type t, Pos p, Board b) {
         pos = new Pos(p);
         Tile[] ts = new Tile[4];
@@ -107,7 +117,7 @@ public class Piece {
                 if (area[x][y] != null) {
                     Tile t = area[x][y];
                     Pos p = t.GetPos();
-                    if(b.GetTile(y, 3-x)!=null){
+                    if (b.GetTile(y, 3 - x) != null) {
                         return;
                     }
                     t.SetLocalPos(y, 3 - x, this);
@@ -125,7 +135,7 @@ public class Piece {
                 if (area[x][y] != null) {
                     Tile t = area[x][y];
                     Pos p = t.GetPos();
-                    if(b.GetTile(3-y, x)!=null){
+                    if (b.GetTile(3 - y, x) != null) {
                         return;
                     }
                     t.SetLocalPos(3 - y, x, this);
@@ -152,21 +162,47 @@ public class Piece {
         return tiles[i];
     }
 
-    public enum Type {
-        I, O, T, S, Z, J, L;
+    // returns the tiles that aren't blocked by itself
+    ArrayList<Tile> Edge(Direction d) {
+        ArrayList<Tile> edge = new ArrayList<Tile>();
+        for (int i = 0; i < 4; i++) {
+            Tile t = tiles[i];
+            Pos neighbor = t.GetPos().Neighbor(d);
+            Boolean add = true;
+            for(int j = 0;j<4;j++){
+                if(neighbor.equals(tiles[j].getClass())){
+                    add = false;
+                }
+            }
 
-        public static Type getRandomType() {
-            Random random = new Random();
-            return values()[random.nextInt(values().length)];
+            if(add){
+                edge.add(t);
+            }
         }
 
+        return edge;
+
     }
 
-    public void HardDrop(){
-        
+    public void HardDrop(Board board) {
+        Pos target = HardDropTarget(board);
     }
 
-    public Pos HardDropTarget(Board board){
+    public Pos HardDropTarget(Board board) {
+        ArrayList<Tile> bottomRow = new ArrayList<Tile>();
+        for(){
+
+        }
+
+
+        for (int i = 0; i < bottomRow.size(); i++) {
+            Tile t = bottomRow.get(i);
+            int y = t.GetPos().y;        
+            while(y>0){
+                if()
+            }
+
+        }
         return null;
     }
 

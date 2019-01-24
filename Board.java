@@ -48,7 +48,7 @@ public class Board {
 
     }
 
-    public Tile GetTile(int x, int y){
+    public Tile GetTile(int x, int y) {
         return tiles[x][y];
     }
 

@@ -12,11 +12,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        board = new Board(10,20);
-        frame = MakeFrame(board); 
-        BoardControlsDisplay controls = new BoardControlsDisplay(frame,board);
+        board = new Board(10, 20);
+        frame = MakeFrame(board);
+        BoardControlsDisplay controls = new BoardControlsDisplay(frame, board);
 
-        //boardDisplay.DrawBoard();
+        // boardDisplay.DrawBoard();
 
         controls.MakeButtons();
         controls.BindKeys();
@@ -30,8 +30,8 @@ public class Main {
         frame.repaint();
     }
 
-    public static BoardDisplay MakeFrame(Board b){
-        BoardDisplay f = new BoardDisplay(b,"Tetris");
+    public static BoardDisplay MakeFrame(Board b) {
+        BoardDisplay f = new BoardDisplay(b, "Tetris");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(1024, 768);// 400 width and 500 height
         f.setLayout(null);// using no layout managers

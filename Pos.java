@@ -1,9 +1,9 @@
 public class Pos {
     public int x, y;
 
-    public Pos(Pos p){
-        x=p.x;
-        y=p.y;
+    public Pos(Pos p) {
+        x = p.x;
+        y = p.y;
     }
 
     public Pos Offset(Pos offset) {
@@ -31,19 +31,21 @@ public class Pos {
         return Offset(0, -1);
     }
 
-    public Pos Neighbor(Direction d){
-        if(d==Direction.Left){
+    public Pos Neighbor(Direction d) {
+        if (d == Direction.Left) {
             return Left();
-        }
-        else if(d==Direction.Right){
+        } else if (d == Direction.Right) {
             return Right();
-        }
-        else{
+        } else {
             return Down();
         }
     }
 
-    public String ToString(){
-        return "(x="+x+", y="+y+")";
+    public String ToString() {
+        return "(x=" + x + ", y=" + y + ")";
+    }
+
+    public Boolean equals(Pos p){
+        return x==p.x && y ==p.y;
     }
 }
