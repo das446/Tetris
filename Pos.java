@@ -1,6 +1,11 @@
 public class Pos {
     public int x, y;
 
+    public Pos(Pos p){
+        x=p.x;
+        y=p.y;
+    }
+
     public Pos Offset(Pos offset) {
         return new Pos(x + offset.x, y + offset.y);
     }
@@ -37,11 +42,4 @@ public class Pos {
             return Down();
         }
     }
-}
-
-public enum Direction{
-    Left,
-    Right,
-    Down,
-    //I don't think I need Up
 }

@@ -20,30 +20,26 @@ public class Piece {
     }
 
     public void Move(Direction d){
-        if(d==Direction.Down){
-            MoveDown();
-        }
-        else if(d==Direction.Left){
-            MoveLeft();
-        }
-        else if(d==Direction.Right){
-            MoveRight();
+        pos = pos.Neighbor(d);
+        for(int i=0;i<4;i++){
+            tiles[i].Move(d);
         }
     }
 
-    public void MoveDown() {
-        pos = pos.Down();
-        for (int i = 0; i < 4; i++) {
-            Tile t = tiles[i];
-            t.pos = t.pos.Down();
-        }
+    public Pos GetPos(){
+        return new Pos(pos);
     }
 
-    public void MoveLeft() {
+   
+    public enum Type{
+        I,
+        O,
+        T,
+        S,
+        Z,
+        J,
+        L
 
     }
 
-    public void MoveRight() {
-
-    }
 }
