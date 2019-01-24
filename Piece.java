@@ -17,132 +17,157 @@ public class Piece {
         }
     }
 
-    public static Piece Random(Pos p,Board b){
-        Type t =Type.getRandomType();
+    public static Piece Random(Pos p, Board b) {
+        Type t = Type.getRandomType();
 
-        return new Piece(t,p,b);
+        return new Piece(t, p, b);
     }
 
-    public Piece(Type t,Pos p, Board b){
-        System.out.println(t.toString());
+    public Piece(Type t, Pos p, Board b) {
         pos = new Pos(p);
         Tile[] ts = new Tile[4];
-        switch(t){
-            case O:
-            {
-                Color color = Color.yellow;
-                ts[0] = new Tile(1,1,color,pos);
-                ts[1] = new Tile(2,1,color,pos);
-                ts[2] = new Tile(1,2,color,pos);
-                ts[3] = new Tile(2,2,color,pos);
-                
-                break;
-            }
+        switch (t) {
+        case O: {
+            Color color = Color.yellow;
+            ts[0] = new Tile(1, 1, color, pos);
+            ts[1] = new Tile(2, 1, color, pos);
+            ts[2] = new Tile(1, 2, color, pos);
+            ts[3] = new Tile(2, 2, color, pos);
 
-             case I:
-             {
-                Color color = Color.cyan;
-                ts[0] = new Tile(1,0,color,pos);
-                ts[1] = new Tile(1,1,color,pos);
-                ts[2] = new Tile(1,2,color,pos);
-                ts[3] = new Tile(1,3,color,pos);
-                break;
-             }
+            break;
+        }
 
-             case T:{
-                Color color = Color.magenta;
-                ts[0] = new Tile(0,0,color,pos);
-                ts[1] = new Tile(1,0,color,pos);
-                ts[2] = new Tile(2,0,color,pos);
-                ts[3] = new Tile(1,1,color,pos);
-                break;
-             }
+        case I: {
+            Color color = Color.cyan;
+            ts[0] = new Tile(1, 0, color, pos);
+            ts[1] = new Tile(1, 1, color, pos);
+            ts[2] = new Tile(1, 2, color, pos);
+            ts[3] = new Tile(1, 3, color, pos);
+            break;
+        }
 
-             case S:{
-                Color color = Color.green;
-                ts[0] = new Tile(0,0,color,pos);
-                ts[1] = new Tile(1,1,color,pos);
-                ts[2] = new Tile(1,0,color,pos);
-                ts[3] = new Tile(2,1,color,pos);
-                break;
-             }
+        case T: {
+            Color color = Color.magenta;
+            ts[0] = new Tile(1, 1, color, pos);
+            ts[1] = new Tile(2, 1, color, pos);
+            ts[2] = new Tile(3, 1, color, pos);
+            ts[3] = new Tile(2, 2, color, pos);
+            break;
+        }
 
-             case Z:{
-                Color color = Color.red;
-                ts[0] = new Tile(0,1,color,pos);
-                ts[1] = new Tile(1,1,color,pos);
-                ts[2] = new Tile(1,0,color,pos);
-                ts[3] = new Tile(2,0,color,pos);
-                break;
-             }
+        case S: {
+            Color color = Color.green;
+            ts[0] = new Tile(1, 1, color, pos);
+            ts[1] = new Tile(2, 2, color, pos);
+            ts[2] = new Tile(2, 1, color, pos);
+            ts[3] = new Tile(3, 2, color, pos);
+            break;
+        }
 
-            case L:{
-                Color color = Color.orange;
-                ts[0] = new Tile(0,0,color,pos);
-                ts[1] = new Tile(0,1,color,pos);
-                ts[2] = new Tile(0,2,color,pos);
-                ts[3] = new Tile(1,0,color,pos);
-                break;
-            }
+        case Z: {
+            Color color = Color.red;
+            ts[0] = new Tile(1, 2, color, pos);
+            ts[1] = new Tile(2, 2, color, pos);
+            ts[2] = new Tile(2, 1, color, pos);
+            ts[3] = new Tile(3, 1, color, pos);
+            break;
+        }
 
-            case J:
-            {
-                Color color = Color.pink;
-                ts[0] = new Tile(0,0,color,pos);
-                ts[1] = new Tile(1,0,color,pos);
-                ts[2] = new Tile(1,1,color,pos);
-                ts[3] = new Tile(1,2,color,pos);
-                break;
-            }
-            
-            default:
-                break;
+        case L: {
+            Color color = Color.orange;
+            ts[0] = new Tile(1, 0, color, pos);
+            ts[1] = new Tile(1, 1, color, pos);
+            ts[2] = new Tile(1, 2, color, pos);
+            ts[3] = new Tile(2, 0, color, pos);
+            break;
+        }
+
+        case J: {
+            Color color = Color.pink;
+            ts[0] = new Tile(1, 0, color, pos);
+            ts[1] = new Tile(2, 0, color, pos);
+            ts[2] = new Tile(2, 1, color, pos);
+            ts[3] = new Tile(2, 2, color, pos);
+            break;
+        }
+
+        default:
+            break;
         }
 
         tiles = ts;
         SetTiles(tiles);
     }
 
-    public void RotateClockwise() {
-        
+    public void RotateClockwise(Board b) {
+
+        Tile[][] newArea = new Tile[4][4];
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                if (area[x][y] != null) {
+                    Tile t = area[x][y];
+                    Pos p = t.GetPos();
+                    if(b.GetTile(y, 3-x)!=null){
+                        return;
+                    }
+                    t.SetLocalPos(y, 3 - x, this);
+                    newArea[y][3 - x] = t;
+                }
+            }
+        }
+        area = newArea;
     }
 
-    public void RotateCounterClockwise() {
-
+    public void RotateCounterClockwise(Board b) {
+        Tile[][] newArea = new Tile[4][4];
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                if (area[x][y] != null) {
+                    Tile t = area[x][y];
+                    Pos p = t.GetPos();
+                    if(b.GetTile(3-y, x)!=null){
+                        return;
+                    }
+                    t.SetLocalPos(3 - y, x, this);
+                    newArea[3 - y][x] = t;
+                }
+            }
+        }
+        area = newArea;
     }
 
-    public void Move(Direction d){
+    public void Move(Direction d) {
         pos = pos.Neighbor(d);
-        for(int i=0;i<4;i++){
+        for (int i = 0; i < 4; i++) {
             tiles[i].Move(d);
         }
 
-        System.out.println("Moved "+pos.ToString());
     }
 
-    public Pos GetPos(){
+    public Pos GetPos() {
         return new Pos(pos);
     }
 
-    public Tile GetTile(int i){
+    public Tile GetTile(int i) {
         return tiles[i];
     }
 
-   
-    public enum Type{
-        I,
-        O,
-        T,
-        S,
-        Z,
-        J,
-        L;
+    public enum Type {
+        I, O, T, S, Z, J, L;
 
         public static Type getRandomType() {
             Random random = new Random();
             return values()[random.nextInt(values().length)];
         }
 
+    }
+
+    public void HardDrop(){
+        
+    }
+
+    public Pos HardDropTarget(Board board){
+        return null;
     }
 
 }

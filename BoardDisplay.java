@@ -31,10 +31,10 @@ public class BoardDisplay extends JFrame{
         for(int i = 0; i<tiles.size();i++){
             Tile t = tiles.get(i);
             Pos p = t.GetPos();
-            if(p.y>height){
-                continue;
-            }
             Color c = t.color;
+            if(p.y>height){
+                c = new Color(c.getRed(),c.getGreen(),c.getBlue(),50);
+            }
             g.setColor(c);
             Pos drawPos = p.Offset(100,100);
             int x = origin.x + p.x * tileSize;
@@ -43,5 +43,9 @@ public class BoardDisplay extends JFrame{
             g.setColor(Color.black);
             g.drawRect(x, y, tileSize, tileSize);
         }
+    }
+
+    public void DrawGhostPiece(){
+        Pos target;
     }
 }

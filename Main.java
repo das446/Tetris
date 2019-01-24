@@ -19,6 +19,7 @@ public class Main {
         //boardDisplay.DrawBoard();
 
         controls.MakeButtons();
+        controls.BindKeys();
 
         TickThread tt = new TickThread(1000);
         tt.start();
