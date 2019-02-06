@@ -164,26 +164,77 @@ public class Piece {
 
     // returns the tiles that aren't blocked by itself
     ArrayList<Tile> Edge(Direction d) {
-        ArrayList<Tile> edge = new ArrayList<Tile>();
-        for (int i = 0; i < 4; i++) {
-            Tile t = tiles[i];
-            Pos neighbor = t.GetPos().Neighbor(d);
-            Boolean add = true;
-            for(int j = 0;j<4;j++){
-                if(neighbor.equals(tiles[j].getClass())){
-                    add = false;
-                }
-            }
-            
-
+        if(d == Direction.Left){
+            return LeftEdge();
         }
-
-        return edge;
+        else if (d==Direction.Right){
+            return RightEdge();
+        }
+        else{
+            return BottomEdge();
+        }
 
     }
 
+    ArrayList<Tile> LeftEdge(){
+        ArrayList<Tile> edge = new ArrayList<Tile>();
+        Boolean hit = false;
+        for(int x = 0; x < 4; x++){
+            if(hit){
+                return edge;
+            }
+            for(int y = 0; y < 4; y++){
+                Tile t = area[x][y];
+                if(t!=null){
+                    edge.add(t);
+                    hit = true;
+                }
+            }
+        }
+        return edge;
+    }
+
+    ArrayList<Tile> RightEdge(){
+        ArrayList<Tile> edge = new ArrayList<Tile>();
+        Boolean hit = false;
+        for(int x = 3; x > 0; x--){
+            if(hit){
+                return edge;
+            }
+            for(int y = 0; y < 4; y++){
+                Tile t = area[x][y];
+                if(t!=null){
+                    edge.add(t);
+                    hit = true;
+                }
+            }
+        }
+        return edge;
+    }
+
+     ArrayList<Tile> BottomEdge(){
+        ArrayList<Tile> edge = new ArrayList<Tile>();
+        Boolean hit = false;
+        for(int y = 0; y < 4; y++){
+            if(hit){
+                return edge;
+            }
+            for(int x = 0; x < 4; x++){
+                Tile t = area[x][y];
+                if(t!=null){
+                    edge.add(t);
+                    hit = true;
+                }
+            }
+        }
+        return edge;
+    }
+
+
+
     public void HardDrop(Board board) {
         Pos target = HardDropTarget(board);
+        pos = target;
     }
 
     public Pos HardDropTarget(Board board) {
