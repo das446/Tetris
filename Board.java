@@ -13,6 +13,10 @@ public class Board {
         tiles = new Tile[this.width][this.height];
     }
 
+    public void LockActivePiece(){
+        activePiece = null;
+    }
+
     public void Tick() {
         if (activePiece == null) {
             activePiece = Piece.Random(new Pos(3, 21), this);
@@ -40,7 +44,9 @@ public class Board {
         ArrayList<Tile> ts = GetTiles();
         for (int i = 0; i < ts.size(); i++) {
             Tile t = ts.get(i);
-            tiles[t.pos.x][t.pos.y] = t;
+            if (!InvalidPos(t.pos.x, t.pos.y)) {
+                tiles[t.pos.x][t.pos.y] = t;
+            }
         }
     }
 
@@ -49,7 +55,14 @@ public class Board {
     }
 
     public Tile GetTile(int x, int y) {
+        if (InvalidPos(x, y)) {
+            return null;
+        }
         return tiles[x][y];
+    }
+
+    private boolean InvalidPos(int x, int y) {
+        return x < 0 || y < 0 || x >= width || y >= height + 4;
     }
 
     public ArrayList<Tile> GetTiles() {
@@ -73,6 +86,10 @@ public class Board {
 
     public Piece GetActivePiece() {
         return activePiece;
+    }
+
+    public Tile GetTile(Pos p) {
+        return GetTile(p.x, p.y);
     }
 
 }

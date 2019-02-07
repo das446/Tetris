@@ -82,6 +82,8 @@ public class BoardControlsDisplay {
                     RotateLeft();
                 } else if (e.getKeyCode() == 87) {
                     RotateRight();
+                } else if (e.getKeyCode() == 38) {
+                    HardDrop();
                 }
             }
         });
@@ -109,6 +111,14 @@ public class BoardControlsDisplay {
 
     void RotateLeft() {
         board.GetActivePiece().RotateCounterClockwise(board);
+        board.UpdateTiles();
+        frame.repaint();
+    }
+
+    void HardDrop() {
+        System.out.println("drop");
+        board.GetActivePiece().HardDrop(board);
+        board.LockActivePiece();
         board.UpdateTiles();
         frame.repaint();
     }

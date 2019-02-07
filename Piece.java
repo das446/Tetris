@@ -147,11 +147,22 @@ public class Piece {
     }
 
     public void Move(Direction d) {
+
         pos = pos.Neighbor(d);
         for (int i = 0; i < 4; i++) {
             tiles[i].Move(d);
         }
 
+    }
+
+    public boolean CanMove(Direction d, Board b){
+        return true;
+    }
+
+    public void Move(Direction d, int i) {
+        for (int j = 0; j < i; j++) {
+            Move(d);
+        }
     }
 
     public Pos GetPos() {
@@ -162,30 +173,27 @@ public class Piece {
         return tiles[i];
     }
 
-    // returns the tiles that aren't blocked by itself
     ArrayList<Tile> Edge(Direction d) {
-        if(d == Direction.Left){
+        if (d == Direction.Left) {
             return LeftEdge();
-        }
-        else if (d==Direction.Right){
+        } else if (d == Direction.Right) {
             return RightEdge();
-        }
-        else{
+        } else {
             return BottomEdge();
         }
 
     }
 
-    ArrayList<Tile> LeftEdge(){
+    ArrayList<Tile> LeftEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
         Boolean hit = false;
-        for(int x = 0; x < 4; x++){
-            if(hit){
+        for (int x = 0; x < 4; x++) {
+            if (hit) {
                 return edge;
             }
-            for(int y = 0; y < 4; y++){
+            for (int y = 0; y < 4; y++) {
                 Tile t = area[x][y];
-                if(t!=null){
+                if (t != null) {
                     edge.add(t);
                     hit = true;
                 }
@@ -194,16 +202,16 @@ public class Piece {
         return edge;
     }
 
-    ArrayList<Tile> RightEdge(){
+    ArrayList<Tile> RightEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
         Boolean hit = false;
-        for(int x = 3; x > 0; x--){
-            if(hit){
+        for (int x = 3; x > 0; x--) {
+            if (hit) {
                 return edge;
             }
-            for(int y = 0; y < 4; y++){
+            for (int y = 0; y < 4; y++) {
                 Tile t = area[x][y];
-                if(t!=null){
+                if (t != null) {
                     edge.add(t);
                     hit = true;
                 }
@@ -212,16 +220,16 @@ public class Piece {
         return edge;
     }
 
-     ArrayList<Tile> BottomEdge(){
+    ArrayList<Tile> BottomEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
         Boolean hit = false;
-        for(int y = 0; y < 4; y++){
-            if(hit){
+        for (int y = 0; y < 4; y++) {
+            if (hit) {
                 return edge;
             }
-            for(int x = 0; x < 4; x++){
+            for (int x = 0; x < 4; x++) {
                 Tile t = area[x][y];
-                if(t!=null){
+                if (t != null) {
                     edge.add(t);
                     hit = true;
                 }
@@ -230,26 +238,39 @@ public class Piece {
         return edge;
     }
 
+    public Pos HardDrop(Board board) {
+        while (HitBeneath(board) == null) {
+            Move(Direction.Down);
+        }
+        System.out.println(pos.ToString());
+        return pos;
+    }
 
-
-    public void HardDrop(Board board) {
-        Pos target = HardDropTarget(board);
-        pos = target;
+    public Pos HitBeneath(Board board) {
+        ArrayList<Tile> edge = Edge(Direction.Down);
+        for (int i = 0; i < edge.size(); i++) {
+            Pos p = edge.get(i).GetPos();
+            Pos check = p.Down();
+            if (board.GetTile(check) != null || p.y == 0) {
+                return p;
+            }
+        }
+        return null;
     }
 
     public Pos HardDropTarget(Board board) {
-        ArrayList<Tile> edges = Edge(Direction.Down);
+        ArrayList<Tile> edge = Edge(Direction.Down);
+        int y = edge.get(0).GetPos().y;
 
+        while (y >= 0) {
+            if (HitBeneath(board) != null) {
+                return new Pos(pos.x, y);
+            }
+            y--;
+            Move(Direction.Down);
+        }
+        return new Pos(pos.x, y);
 
-        // for (int i = 0; i < bottomRow.size(); i++) {
-        //     Tile t = bottomRow.get(i);
-        //     int y = t.GetPos().y;        
-        //     while(y>0){
-                
-        //     }
-
-        // }
-        return null;
     }
 
 }
