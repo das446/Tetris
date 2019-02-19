@@ -1,20 +1,25 @@
 import java.util.ArrayList;
 
 public class Board {
-    Tile[][] tiles;
+    ArrayList<Tile> tiles;
     int height, width;
     ArrayList<Piece> next;
 
     Piece activePiece;
 
+    Piece held;
+
     public Board(int width, int height) {
         this.height = height + 5;// includes hidden top rows
         this.width = width;
-        tiles = new Tile[this.width][this.height];
+        tiles = new ArrayList<Tile>();
     }
 
-    public void LockActivePiece(){
+    public void LockActivePiece() {
         activePiece = null;
+        for (int i = 0; i < height; i++) {
+            ClearRow(i);
+        }
     }
 
     public void Tick() {
@@ -23,10 +28,9 @@ public class Board {
             AddPiece(activePiece);
 
         } else {
-            activePiece.Move(Direction.Down);
+            activePiece.Move(Direction.Down, this);
         }
 
-        UpdateTiles();
     }
 
     void AddPiece(Piece p) {
@@ -36,52 +40,72 @@ public class Board {
     }
 
     void AddTile(Tile t) {
-        Pos p = t.GetPos();
-        tiles[p.x][p.y] = t;
+        tiles.add(t);
     }
 
-    public void UpdateTiles() {
-        ArrayList<Tile> ts = GetTiles();
-        for (int i = 0; i < ts.size(); i++) {
-            Tile t = ts.get(i);
-            if (!InvalidPos(t.pos.x, t.pos.y)) {
-                tiles[t.pos.x][t.pos.y] = t;
+    void ClearRow(int i) {
+        ArrayList<Tile> row = Row(i);
+        if (row.size() >= width) {
+            for (int x = 0; x < row.size(); x++) {
+                tiles.remove(row.get(x));
+            }
+
+            for (int y = i + 1; y < height; y++) {
+                ArrayList<Tile> r = Row(y);
+                for (int x = 0; x < width; x++) {
+                    Tile tile = GetTile(x, y);
+                    if (tile != null) {
+                        tile.Move(Direction.Down);
+                    }
+                }
             }
         }
     }
 
-    public void ClearLine(int i) {
+    ArrayList<Tile> Row(int y) {
+        ArrayList<Tile> row = new ArrayList<Tile>();
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile t = GetTile(i, y);
+            if (t != null) {
+                row.add(t);
+            }
+        }
+        return row;
+    }
 
+    Boolean FullRow(int i) {
+        for (int x = 0; x < width; x++) {
+            if (GetTile(x, i) == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Tile GetTile(int x, int y) {
-        if (InvalidPos(x, y)) {
+        if (OutOfBounds(x, y)) {
             return null;
         }
-        return tiles[x][y];
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile t = tiles.get(i);
+            if (t.pos.x == x && t.pos.y == y) {
+                return t;
+            }
+        }
+        return null;
+
     }
 
-    private boolean InvalidPos(int x, int y) {
-        return x < 0 || y < 0 || x >= width || y >= height + 4;
+    private Boolean OutOfBounds(Pos p) {
+        return OutOfBounds(p.x, p.y);
+    }
+
+    private Boolean OutOfBounds(int x, int y) {
+        return x < 0 || x > width - 1 || y < 1 || y > height;
     }
 
     public ArrayList<Tile> GetTiles() {
-        ArrayList<Tile> t = new ArrayList<Tile>();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (tiles[x][y] != null) {
-                    t.add(tiles[x][y]);
-                }
-
-            }
-        }
-
-        return t;
-
-    }
-
-    public Boolean OutOfBounds(Pos p) {
-        return p.x < 0 || p.x >= width || p.y < 0 || p.y > height;
+        return tiles;
     }
 
     public Piece GetActivePiece() {
@@ -92,4 +116,12 @@ public class Board {
         return GetTile(p.x, p.y);
     }
 
+    public Boolean Empty(int x, int y) {
+        return Empty(new Pos(x, y));
+    }
+
+    public Boolean Empty(Pos p) {
+        Boolean hasTile = GetTile(p) != null;
+        return !OutOfBounds(p) && !hasTile;
+    }
 }

@@ -9,6 +9,11 @@ public class Tile {
         color = c;
     }
 
+    public Tile(Tile t){
+        pos = new Pos(t.pos);
+        color = t.color;
+    }
+
     public Tile(int x, int y, Color c) {
         pos = new Pos(x, y);
         color = c;

@@ -33,6 +33,16 @@ public class Piece {
 
     }
 
+    public Piece(Piece p) {
+        pos = p.pos;
+        Tile[] ts = new Tile[4];
+        for (int i = 0; i < 4; i++) {
+            ts[i] = new Tile(p.tiles[i].pos, p.tiles[i].color);
+        }
+        tiles = ts;
+        SetTiles(tiles);
+    }
+
     public Piece(Type t, Pos p, Board b) {
         pos = new Pos(p);
         Tile[] ts = new Tile[4];
@@ -146,23 +156,28 @@ public class Piece {
         area = newArea;
     }
 
-    public void Move(Direction d) {
-
-        pos = pos.Neighbor(d);
-        for (int i = 0; i < 4; i++) {
-            tiles[i].Move(d);
+    public void Move(Direction d, Board b) {
+        if (CanMove(d, b)) {
+            pos = pos.Neighbor(d);
+            for (int i = 0; i < 4; i++) {
+                tiles[i].Move(d);
+            }
+        } else if (d == Direction.Down && !CanMove(d, b) && b.GetActivePiece() == this) {
+            b.LockActivePiece();
         }
 
     }
 
-    public boolean CanMove(Direction d, Board b){
+    public Boolean CanMove(Direction d, Board b) {
+        ArrayList<Tile> edge = Edge(d);
+        for (int i = 0; i < edge.size(); i++) {
+            Tile t = edge.get(i);
+            Pos p = t.pos.Neighbor(d);
+            if (b.Empty(p) == false) {
+                return false;
+            }
+        }
         return true;
-    }
-
-    public void Move(Direction d, int i) {
-        for (int j = 0; j < i; j++) {
-            Move(d);
-        }
     }
 
     public Pos GetPos() {
@@ -239,38 +254,10 @@ public class Piece {
     }
 
     public Pos HardDrop(Board board) {
-        while (HitBeneath(board) == null) {
-            Move(Direction.Down);
+        while (CanMove(Direction.Down, board)) {
+            Move(Direction.Down, board);
         }
-        System.out.println(pos.ToString());
         return pos;
-    }
-
-    public Pos HitBeneath(Board board) {
-        ArrayList<Tile> edge = Edge(Direction.Down);
-        for (int i = 0; i < edge.size(); i++) {
-            Pos p = edge.get(i).GetPos();
-            Pos check = p.Down();
-            if (board.GetTile(check) != null || p.y == 0) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    public Pos HardDropTarget(Board board) {
-        ArrayList<Tile> edge = Edge(Direction.Down);
-        int y = edge.get(0).GetPos().y;
-
-        while (y >= 0) {
-            if (HitBeneath(board) != null) {
-                return new Pos(pos.x, y);
-            }
-            y--;
-            Move(Direction.Down);
-        }
-        return new Pos(pos.x, y);
-
     }
 
 }

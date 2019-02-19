@@ -84,6 +84,10 @@ public class BoardControlsDisplay {
                     RotateRight();
                 } else if (e.getKeyCode() == 38) {
                     HardDrop();
+                } else if (e.getKeyCode() == 40) {
+                    MoveDown();
+                } else if (e.getKeyCode() == 69) {
+                    Hold();
                 }
             }
         });
@@ -92,34 +96,56 @@ public class BoardControlsDisplay {
     }
 
     void MoveLeft() {
-        board.GetActivePiece().Move(Direction.Left);
-        board.UpdateTiles();
+        if (board.GetActivePiece() == null) {
+            return;
+        }
+        board.GetActivePiece().Move(Direction.Left, board);
         frame.repaint();
     }
 
     void MoveRight() {
-        board.GetActivePiece().Move(Direction.Right);
-        board.UpdateTiles();
+        if (board.GetActivePiece() == null) {
+            return;
+        }
+        board.GetActivePiece().Move(Direction.Right, board);
+        frame.repaint();
+    }
+
+    void MoveDown() {
+        if (board.GetActivePiece() == null) {
+            return;
+        }
+        board.GetActivePiece().Move(Direction.Down, board);
         frame.repaint();
     }
 
     void RotateRight() {
+        if (board.GetActivePiece() == null) {
+            return;
+        }
         board.GetActivePiece().RotateClockwise(board);
-        board.UpdateTiles();
         frame.repaint();
     }
 
     void RotateLeft() {
+        if (board.GetActivePiece() == null) {
+            return;
+        }
         board.GetActivePiece().RotateCounterClockwise(board);
-        board.UpdateTiles();
         frame.repaint();
     }
 
     void HardDrop() {
+        if (board.GetActivePiece() == null) {
+            return;
+        }
         System.out.println("drop");
         board.GetActivePiece().HardDrop(board);
-        board.LockActivePiece();
-        board.UpdateTiles();
+        board.Tick();
         frame.repaint();
+    }
+
+    void Hold(){
+
     }
 }
