@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Board {
     ArrayList<Tile> tiles;
     int height, width;
-    ArrayList<Piece> next;
+    ArrayList<Piece> next = new ArrayList<Piece>();
 
     Piece activePiece;
 
@@ -17,13 +17,18 @@ public class Board {
         this.height = height + 5;// includes hidden top rows
         this.width = width;
         tiles = new ArrayList<Tile>();
+        MakeNext();
     }
 
     void MakeNext() {
         if (next.size() <= 7) {
-            ArrayList<Tile> newTiles = new ArrayList<Tile>();
-
+            ArrayList<Piece> newTiles = new ArrayList<Piece>();
+            for (int i = 0; i < 7; i++) {
+                newTiles.add(Piece.Random(new Pos(0, 0), this));
+            }
+            next.addAll(newTiles);
         }
+
     }
 
     public void LockActivePiece() {

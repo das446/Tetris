@@ -15,6 +15,8 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
 
     int boxSize = 120;
 
+    int nextAmnt = 3;
+
     public void Tick() {
         repaint();
     }
@@ -23,9 +25,20 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
         super.paint(g);
         g.setColor(Color.black);
         g.drawRect(origin.x, origin.y, width * tileSize, height * tileSize);
-        g.drawRect(origin.x - boxSize, origin.y, boxSize, boxSize);
         DrawBoard(g);
         DrawGhostPiece(g);
+
+        DrawHeld(g);
+        Pos o = origin.Offset(width * tileSize,0);
+        DrawNexts(o, boxSize, g);
+    }
+
+    private void DrawHeld(Graphics g) {
+        Font font = new Font("Comic Sans", Font.PLAIN, 48);
+        g.setFont(font);
+        g.drawRect(origin.x - boxSize, origin.y, boxSize, boxSize);
+        g.drawString("Hold", origin.x - boxSize, origin.y + boxSize + 40);
+
         if (board.held != null) {
             DrawPiece(board.held, new Pos(origin.x - boxSize, origin.y), tileSize, g);
         }
@@ -80,6 +93,17 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
             g.fillRect(x, y, tileSize, tileSize);
             g.setColor(Color.black);
             g.drawRect(x, y, tileSize, tileSize);
+        }
+    }
+
+    public void DrawNexts(Pos origin, int tileSize, Graphics g) {
+        int y = origin.y;
+        int size = tileSize;
+        for (int i = 0; i < nextAmnt; i++) {
+            g.drawRect(origin.x, y, size, size);
+            DrawPiece(board.next.get(i),new Pos(origin.x,y),tileSize,g);
+            y = y + tileSize;
+            tileSize -= 16;
         }
     }
 }
