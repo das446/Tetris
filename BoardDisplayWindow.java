@@ -11,7 +11,9 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
     int areaSide = 150;
     int tileSize = 30;
     int width = 10, height = 20;
-    Pos origin = new Pos(100, 100);
+    Pos origin = new Pos(150, 100);
+
+    int boxSize = 120;
 
     public void Tick() {
         repaint();
@@ -21,8 +23,12 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
         super.paint(g);
         g.setColor(Color.black);
         g.drawRect(origin.x, origin.y, width * tileSize, height * tileSize);
+        g.drawRect(origin.x - boxSize, origin.y, boxSize, boxSize);
         DrawBoard(g);
         DrawGhostPiece(g);
+        if (board.held != null) {
+            DrawPiece(board.held, new Pos(origin.x - boxSize, origin.y), tileSize, g);
+        }
     }
 
     public BoardDisplayWindow(Board b, String s) {
@@ -63,6 +69,17 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
         for (int i = 0; i < 4; i++) {
             DrawTile(p.GetTile(i), true, g);
         }
+    }
 
+    public void DrawPiece(Piece piece, Pos origin, int tileSize, Graphics g) {
+        for (int i = 0; i < 4; i++) {
+            Tile t = piece.GetTile(i);
+            g.setColor(t.color);
+            int x = origin.x + t.LocalPos(piece).x * tileSize;
+            int y = origin.y + ((3 - t.LocalPos(piece).y) * tileSize);
+            g.fillRect(x, y, tileSize, tileSize);
+            g.setColor(Color.black);
+            g.drawRect(x, y, tileSize, tileSize);
+        }
     }
 }

@@ -201,17 +201,12 @@ public class Piece {
 
     ArrayList<Tile> LeftEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
-        Boolean hit = false;
-        for (int x = 0; x < 4; x++) {
-            if (hit) {
-                return edge;
-            }
-            for (int y = 0; y < 4; y++) {
-                Tile t = area[x][y];
-                if (t != null) {
-                    edge.add(t);
-                    hit = true;
-                }
+        for (int i = 0; i < 4; i++) {
+            Pos p = tiles[i].LocalPos(this);
+            if (p.x == 0) {
+                edge.add(tiles[i]);
+            } else if (area[p.x - 1][p.y] == null) {
+                edge.add(tiles[i]);
             }
         }
         return edge;
@@ -219,17 +214,12 @@ public class Piece {
 
     ArrayList<Tile> RightEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
-        Boolean hit = false;
-        for (int x = 3; x > 0; x--) {
-            if (hit) {
-                return edge;
-            }
-            for (int y = 0; y < 4; y++) {
-                Tile t = area[x][y];
-                if (t != null) {
-                    edge.add(t);
-                    hit = true;
-                }
+        for (int i = 0; i < 4; i++) {
+            Pos p = tiles[i].LocalPos(this);
+            if (p.x == 3) {
+                edge.add(tiles[i]);
+            } else if (area[p.x + 1][p.y] == null) {
+                edge.add(tiles[i]);
             }
         }
         return edge;
@@ -237,17 +227,12 @@ public class Piece {
 
     ArrayList<Tile> BottomEdge() {
         ArrayList<Tile> edge = new ArrayList<Tile>();
-        Boolean hit = false;
-        for (int y = 0; y < 4; y++) {
-            if (hit) {
-                return edge;
-            }
-            for (int x = 0; x < 4; x++) {
-                Tile t = area[x][y];
-                if (t != null) {
-                    edge.add(t);
-                    hit = true;
-                }
+        for (int i = 0; i < 4; i++) {
+            Pos p = tiles[i].LocalPos(this);
+            if (p.y == 0) {
+                edge.add(tiles[i]);
+            } else if (area[p.x][p.y-1] == null) {
+                edge.add(tiles[i]);
             }
         }
         return edge;

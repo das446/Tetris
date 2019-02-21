@@ -9,17 +9,35 @@ public class Board {
 
     Piece held;
 
+    int points;
+
+    Boolean alreadyHeld = false;
+
     public Board(int width, int height) {
         this.height = height + 5;// includes hidden top rows
         this.width = width;
         tiles = new ArrayList<Tile>();
     }
 
+    void MakeNext() {
+        if (next.size() <= 7) {
+            ArrayList<Tile> newTiles = new ArrayList<Tile>();
+
+        }
+    }
+
     public void LockActivePiece() {
+
         activePiece = null;
         for (int i = 0; i < height; i++) {
             ClearRow(i);
         }
+        for (int i = 0; i < tiles.size(); i++) {
+            if (tiles.get(i).pos.y > height) {
+                Lose();
+            }
+        }
+        alreadyHeld = false;
     }
 
     public void Tick() {
@@ -123,5 +141,36 @@ public class Board {
     public Boolean Empty(Pos p) {
         Boolean hasTile = GetTile(p) != null;
         return !OutOfBounds(p) && !hasTile;
+    }
+
+    void Hold() {
+        System.out.println("Hold");
+        if (alreadyHeld) {
+            return;
+        }
+        Piece temp;
+        if (held == null) {
+            held = activePiece;
+            for (int i = 0; i < 4; i++) {
+                tiles.remove(activePiece.GetTile(i));
+            }
+            activePiece = Piece.Random(new Pos(3, 21), this);
+            AddPiece(activePiece);
+        }
+
+        else {
+            temp = held;
+            held = activePiece;
+            for (int i = 0; i < 4; i++) {
+                tiles.remove(activePiece.GetTile(i));
+            }
+            activePiece = temp;
+            AddPiece(activePiece);
+        }
+        alreadyHeld = true;
+    }
+
+    void Lose() {
+
     }
 }

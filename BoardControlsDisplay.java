@@ -86,7 +86,7 @@ public class BoardControlsDisplay {
                     HardDrop();
                 } else if (e.getKeyCode() == 40) {
                     MoveDown();
-                } else if (e.getKeyCode() == 69) {
+                } else if (e.getKeyCode() == 32) {
                     Hold();
                 }
             }
@@ -146,6 +146,8 @@ public class BoardControlsDisplay {
     }
 
     void Hold(){
-
+        board.Hold();
+        board.Tick();
+        frame.repaint();
     }
 }
