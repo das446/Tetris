@@ -30,7 +30,7 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
 
         DrawHeld(g);
         Pos o = origin.Offset(width * tileSize,0);
-        DrawNexts(o, boxSize, g);
+        DrawNexts(o, tileSize, g);
     }
 
     private void DrawHeld(Graphics g) {
@@ -98,12 +98,13 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
 
     public void DrawNexts(Pos origin, int tileSize, Graphics g) {
         int y = origin.y;
-        int size = tileSize;
+        int boxSize = tileSize*4;
         for (int i = 0; i < nextAmnt; i++) {
-            g.drawRect(origin.x, y, size, size);
+            g.drawRect(origin.x, y, boxSize, boxSize);
             DrawPiece(board.next.get(i),new Pos(origin.x,y),tileSize,g);
-            y = y + tileSize;
-            tileSize -= 16;
+            y = y + boxSize;
+            tileSize -= 4;
+            boxSize = tileSize*4;
         }
     }
 }
