@@ -3,17 +3,15 @@ import java.util.Observable;
 
 class TickThread extends Thread {
     int tickTime;
-    Boolean tick = true;
-
-    
+    boolean tick = true;
 
     public TickThread(int t) {
         tickTime = t;
     }
 
     public void run() {
-        while (true) {
-            Main.OnTick();
+        while (tick) {
+            GameWindow.OnTick();
             try {
                 sleep(tickTime);
             } catch (InterruptedException e) {
@@ -22,5 +20,12 @@ class TickThread extends Thread {
         }
     }
 
-    
+    public void Pause() {
+        tick = false;
+    }
+
+    public void SpeedUp() {
+        tickTime -= 50;
+    }
+
 }

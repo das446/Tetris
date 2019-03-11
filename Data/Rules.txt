@@ -1,0 +1,5 @@
+How to Play:
+Press the left or right arrow keys to move the piece in that direction.
+Press Down to drop it faster and Up to immediately drop it down.
+Use Q to rotate it counter clockwise and W to rotate it clockwise.
+You can also hold a piece to save it for later by pressing the space bar.

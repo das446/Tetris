@@ -1,21 +1,36 @@
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Board {
     ArrayList<Tile> tiles;
     int height, width;
+    int fullHeight;
     ArrayList<Piece> next = new ArrayList<Piece>();
 
     Piece activePiece;
 
     Piece held;
 
+    int linesCleared;
+
     int points;
 
     Boolean alreadyHeld = false;
 
+    Pos start = new Pos(3, 20);
+
+    public static Tile outOfBounds = new Tile(new Pos(-1, -1), Color.black);
+
+    public static Tile empty = new Tile(new Pos(-1, -1), Color.black);
+
+    public BoardDisplay display;
+    public boolean playing = true;
+
     public Board(int width, int height) {
-        this.height = height + 5;// includes hidden top rows
+        this.height = height;
         this.width = width;
+        this.fullHeight = height + 5;
         tiles = new ArrayList<Tile>();
         MakeNext();
     }
@@ -24,8 +39,10 @@ public class Board {
         if (next.size() <= 7) {
             ArrayList<Piece> newTiles = new ArrayList<Piece>();
             for (int i = 0; i < 7; i++) {
-                newTiles.add(Piece.Random(new Pos(0, 0), this));
+                Piece.Type t = Piece.Type.values()[i];
+                newTiles.add(new Piece(t, start, this));
             }
+            Collections.shuffle(newTiles);
             next.addAll(newTiles);
         }
 
@@ -47,8 +64,10 @@ public class Board {
 
     public void Tick() {
         if (activePiece == null) {
-            activePiece = Piece.Random(new Pos(3, 21), this);
+            activePiece = next.get(0);
             AddPiece(activePiece);
+            next.remove(0);
+            MakeNext();
 
         } else {
             activePiece.Move(Direction.Down, this);
@@ -67,6 +86,9 @@ public class Board {
     }
 
     void ClearRow(int i) {
+        if (!FullRow(i)) {
+            return;
+        }
         ArrayList<Tile> row = Row(i);
         if (row.size() >= width) {
             for (int x = 0; x < row.size(); x++) {
@@ -77,19 +99,25 @@ public class Board {
                 ArrayList<Tile> r = Row(y);
                 for (int x = 0; x < width; x++) {
                     Tile tile = GetTile(x, y);
-                    if (tile != null) {
+                    if (tile != empty) {
                         tile.Move(Direction.Down);
                     }
                 }
             }
+
+            linesCleared++;
+            if (linesCleared % 10 == 0) {
+                GameWindow.tt.SpeedUp();
+            }
         }
+
     }
 
     ArrayList<Tile> Row(int y) {
         ArrayList<Tile> row = new ArrayList<Tile>();
         for (int i = 0; i < tiles.size(); i++) {
             Tile t = GetTile(i, y);
-            if (t != null) {
+            if (t != empty && t != outOfBounds) {
                 row.add(t);
             }
         }
@@ -98,7 +126,7 @@ public class Board {
 
     Boolean FullRow(int i) {
         for (int x = 0; x < width; x++) {
-            if (GetTile(x, i) == null) {
+            if (GetTile(x, i) == empty) {
                 return false;
             }
         }
@@ -107,7 +135,7 @@ public class Board {
 
     public Tile GetTile(int x, int y) {
         if (OutOfBounds(x, y)) {
-            return null;
+            return outOfBounds;
         }
         for (int i = 0; i < tiles.size(); i++) {
             Tile t = tiles.get(i);
@@ -115,16 +143,16 @@ public class Board {
                 return t;
             }
         }
-        return null;
+        return empty;
 
     }
 
-    private Boolean OutOfBounds(Pos p) {
+    public Boolean OutOfBounds(Pos p) {
         return OutOfBounds(p.x, p.y);
     }
 
-    private Boolean OutOfBounds(int x, int y) {
-        return x < 0 || x > width - 1 || y < 1 || y > height;
+    public Boolean OutOfBounds(int x, int y) {
+        return x < 0 || x > width - 1 || y < 1 || y > fullHeight;
     }
 
     public ArrayList<Tile> GetTiles() {
@@ -144,12 +172,10 @@ public class Board {
     }
 
     public Boolean Empty(Pos p) {
-        Boolean hasTile = GetTile(p) != null;
-        return !OutOfBounds(p) && !hasTile;
+        return GetTile(p) == empty;
     }
 
     void Hold() {
-        System.out.println("Hold");
         if (alreadyHeld) {
             return;
         }
@@ -159,7 +185,7 @@ public class Board {
             for (int i = 0; i < 4; i++) {
                 tiles.remove(activePiece.GetTile(i));
             }
-            activePiece = Piece.Random(new Pos(3, 21), this);
+            activePiece = Piece.Random(start, this);
             AddPiece(activePiece);
         }
 
@@ -170,12 +196,16 @@ public class Board {
                 tiles.remove(activePiece.GetTile(i));
             }
             activePiece = temp;
+            activePiece.SetPos(start);
             AddPiece(activePiece);
         }
         alreadyHeld = true;
     }
 
     void Lose() {
-
+        if (playing) {
+            playing = false;
+            display.Lose(linesCleared);
+        }
     }
 }

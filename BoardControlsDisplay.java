@@ -35,8 +35,8 @@ public class BoardControlsDisplay {
         };
         moveRight.addActionListener(right);
 
-        JButton rotateRight = new JButton("↷");// creating instance of JButton
-        rotateRight.setBounds(600, 300, 100, 40);// x axis, y axis, width, height
+        JButton rotateRight = new JButton("↷");
+        rotateRight.setBounds(600, 300, 100, 40);
         ActionListener rot = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RotateRight();
@@ -44,8 +44,8 @@ public class BoardControlsDisplay {
         };
         rotateRight.addActionListener(rot);
 
-        JButton rotateLeft = new JButton("↶");// creating instance of JButton
-        rotateLeft.setBounds(800, 300, 100, 40);// x axis, y axis, width, height
+        JButton rotateLeft = new JButton("↶");
+        rotateLeft.setBounds(800, 300, 100, 40);
         ActionListener rotCC = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 RotateLeft();
@@ -53,7 +53,7 @@ public class BoardControlsDisplay {
         };
         rotateLeft.addActionListener(rotCC);
 
-        frame.add(moveLeft);// adding button in JFrame
+        frame.add(moveLeft);
         frame.add(moveRight);
         frame.add(rotateRight);
         frame.add(rotateLeft);
@@ -63,16 +63,13 @@ public class BoardControlsDisplay {
         System.out.println("Bind keys");
         frame.addKeyListener(new KeyListener() {
 
-            @Override
             public void keyTyped(KeyEvent e) {
             }
 
-            @Override
             public void keyReleased(KeyEvent arg0) {
 
             }
 
-            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == 37) {
                     MoveLeft();

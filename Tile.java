@@ -49,8 +49,7 @@ public class Tile {
     }
 
     public Pos LocalPos(Piece p) {
-        Pos pos2 = p.GetPos();
-        return pos.Offset(-pos2.x, -pos2.y);
+        return pos.Offset(-p.pos.x, -p.pos.y);
     }
 
     public void Move(Direction d) {

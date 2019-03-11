@@ -26,4 +26,8 @@ public class BoardDisplayConsole implements BoardDisplay {
     public void Tick() {
         DrawBoard(null);
     }
+
+    public void Lose(int score){
+        
+    }
 }

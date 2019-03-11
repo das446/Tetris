@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.awt.Color;
+import java.io.File;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
 
 public class BoardDisplayWindow extends JFrame implements BoardDisplay {
     private static final long serialVersionUID = 1L;
@@ -17,20 +21,30 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
 
     int nextAmnt = 3;
 
+    Color lineColor = Color.black;
+
     public void Tick() {
         repaint();
     }
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(Color.black);
+        // try {
+        // BufferedImage bg = ImageIO.read(new File("bg.jpg"));
+        // g.drawImage(bg, 0, 0, new JLayeredPane());
+        // } catch (Exception e) {
+        // System.out.println("Failed to draw Background");
+        // }
+        g.setColor(lineColor);
         g.drawRect(origin.x, origin.y, width * tileSize, height * tileSize);
         DrawBoard(g);
         DrawGhostPiece(g);
 
         DrawHeld(g);
-        Pos o = origin.Offset(width * tileSize,0);
+        Pos o = origin.Offset(width * tileSize, 0);
         DrawNexts(o, tileSize, g);
+
+        g.drawString("Points: " + board.linesCleared, 450, 650);
     }
 
     private void DrawHeld(Graphics g) {
@@ -69,7 +83,7 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
         int x = origin.x + p.x * tileSize;
         int y = origin.y + height * tileSize - p.y * tileSize;
         g.fillRect(x, y, tileSize, tileSize);
-        g.setColor(Color.black);
+        g.setColor(lineColor);
         g.drawRect(x, y, tileSize, tileSize);
     }
 
@@ -91,20 +105,26 @@ public class BoardDisplayWindow extends JFrame implements BoardDisplay {
             int x = origin.x + t.LocalPos(piece).x * tileSize;
             int y = origin.y + ((3 - t.LocalPos(piece).y) * tileSize);
             g.fillRect(x, y, tileSize, tileSize);
-            g.setColor(Color.black);
+            g.setColor(lineColor);
             g.drawRect(x, y, tileSize, tileSize);
         }
     }
 
     public void DrawNexts(Pos origin, int tileSize, Graphics g) {
         int y = origin.y;
-        int boxSize = tileSize*4;
+        int boxSize = tileSize * 4;
         for (int i = 0; i < nextAmnt; i++) {
             g.drawRect(origin.x, y, boxSize, boxSize);
-            DrawPiece(board.next.get(i),new Pos(origin.x,y),tileSize,g);
+            DrawPiece(board.next.get(i), new Pos(origin.x, y), tileSize, g);
             y = y + boxSize;
             tileSize -= 4;
-            boxSize = tileSize*4;
+            boxSize = tileSize * 4;
         }
+    }
+
+    public void Lose(int score) {
+        new GameOverScreen(score);
+        setVisible(false);
+        dispose();
     }
 }

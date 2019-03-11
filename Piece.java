@@ -3,17 +3,22 @@ import java.util.Random;
 import java.util.*;
 
 public class Piece {
-    Tile[][] area; //
-    Tile[] tiles;
+    Tile[] tiles = new Tile[4];
     Pos pos; // origin is bottom left
 
+    public Tile[][] GetArea() {
+        Tile[][] area = new Tile[4][4];
+        for (int x = 0; x < 4; x++) {
+            Tile t = tiles[x];
+            area[t.LocalPos(this).x][t.LocalPos(this).y] = t;
+        }
+        return area;
+    }
+
     void SetTiles(Tile[] tiles) {
-        area = new Tile[4][4];
+        this.tiles = new Tile[4];
         for (int i = 0; i < 4; i++) {
-            Tile t = tiles[i];
-            int x = t.LocalPos(this).x;
-            int y = t.LocalPos(this).y;
-            area[x][y] = t;
+            this.tiles[i] = tiles[i];
         }
     }
 
@@ -37,10 +42,9 @@ public class Piece {
         pos = p.pos;
         Tile[] ts = new Tile[4];
         for (int i = 0; i < 4; i++) {
-            ts[i] = new Tile(p.tiles[i].pos, p.tiles[i].color);
+            ts[i] = new Tile(p.GetTile(i).pos, p.GetTile(i).color);
         }
-        tiles = ts;
-        SetTiles(tiles);
+        SetTiles(ts);
     }
 
     public Piece(Type t, Pos p, Board b) {
@@ -115,47 +119,59 @@ public class Piece {
             break;
         }
 
-        tiles = ts;
-        SetTiles(tiles);
+        SetTiles(ts);
+    }
+
+    public void Rotate(Board b, boolean clockwise) {
+        if(!CanRotate(b, clockwise)){
+            return;
+        }
+        System.out.println("Valid rotate");
+
+        for (int i = 0; i < 4; i++) {
+            Pos p = tiles[i].LocalPos(this);
+
+            Pos newPos = new Pos(3 - p.y, p.x);
+            if (clockwise) {
+                newPos = new Pos(p.y, 3 - p.x);
+            }
+            tiles[i].SetLocalPos(newPos.x, newPos.y, this);
+        }
     }
 
     public void RotateClockwise(Board b) {
-
-        Tile[][] newArea = new Tile[4][4];
-        for (int x = 0; x < 4; x++) {
-            for (int y = 0; y < 4; y++) {
-                if (area[x][y] != null) {
-                    Tile t = area[x][y];
-                    Pos p = t.GetPos();
-                    if (b.GetTile(y, 3 - x) != null) {
-                        return;
-                    }
-                    t.SetLocalPos(y, 3 - x, this);
-                    newArea[y][3 - x] = t;
-                }
-            }
-        }
-        area = newArea;
+        Rotate(b, true);
     }
 
+    // (3 - y, x)
     public void RotateCounterClockwise(Board b) {
-        Tile[][] newArea = new Tile[4][4];
-        for (int x = 0; x < 4; x++) {
-            for (int y = 0; y < 4; y++) {
-                if (area[x][y] != null) {
-                    Tile t = area[x][y];
-                    Pos p = t.GetPos();
-                    if (b.GetTile(3 - y, x) != null) {
-                        return;
-                    }
-                    t.SetLocalPos(3 - y, x, this);
-                    newArea[3 - y][x] = t;
-                }
-            }
-        }
-        area = newArea;
+        Rotate(b, false);
     }
 
+    boolean CanRotate(Board b, boolean clockwise){
+        for (int i = 0; i < 4; i++) {
+            Pos p = tiles[i].LocalPos(this);
+            Pos globalPos = tiles[i].GetPos();
+
+            Pos newPos = new Pos(3 - p.y, p.x);
+            if (clockwise) {
+                newPos = new Pos(p.y, 3 - p.x);
+            }
+            Pos newGlobalPos = globalPos.Offset(newPos);
+
+            Tile target = b.GetTile(newGlobalPos);
+            if (target == Board.outOfBounds) {
+                System.out.println("out of bounds " + newGlobalPos.ToString());
+                return false;
+            } else if (target == Board.empty) {
+            } else if (HasTileAtPos(newGlobalPos.x, newGlobalPos.y)) {
+            } else {
+                System.out.println("blocked at " + globalPos.ToString() + " -> " + newGlobalPos.ToString());
+                return false;
+            }
+        }
+        return true;
+    }
     public void Move(Direction d, Board b) {
         if (CanMove(d, b)) {
             pos = pos.Neighbor(d);
@@ -200,6 +216,7 @@ public class Piece {
     }
 
     ArrayList<Tile> LeftEdge() {
+        Tile[][] area = GetArea();
         ArrayList<Tile> edge = new ArrayList<Tile>();
         for (int i = 0; i < 4; i++) {
             Pos p = tiles[i].LocalPos(this);
@@ -213,6 +230,7 @@ public class Piece {
     }
 
     ArrayList<Tile> RightEdge() {
+        Tile[][] area = GetArea();
         ArrayList<Tile> edge = new ArrayList<Tile>();
         for (int i = 0; i < 4; i++) {
             Pos p = tiles[i].LocalPos(this);
@@ -226,12 +244,13 @@ public class Piece {
     }
 
     ArrayList<Tile> BottomEdge() {
+        Tile[][] area = GetArea();
         ArrayList<Tile> edge = new ArrayList<Tile>();
         for (int i = 0; i < 4; i++) {
             Pos p = tiles[i].LocalPos(this);
             if (p.y == 0) {
                 edge.add(tiles[i]);
-            } else if (area[p.x][p.y-1] == null) {
+            } else if (area[p.x][p.y - 1] == null) {
                 edge.add(tiles[i]);
             }
         }
@@ -243,6 +262,38 @@ public class Piece {
             Move(Direction.Down, board);
         }
         return pos;
+    }
+
+    public void SetPos(Pos p) {
+        Tile[][] area = GetArea();
+        pos = p;
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                Tile t = area[x][y];
+                if (t != null) {
+                    t.SetLocalPos(x, y, this);
+                }
+            }
+        }
+    }
+
+    public Boolean HasTile(Tile t) {
+        for (int x = 0; x < 4; x++) {
+            if (GetTile(x) == t) {
+                System.out.println(GetTile(x).toString());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean HasTileAtPos(int x, int y) {
+        for (int i = 0; i < 4; i++) {
+            if (GetTile(i).pos.equals(new Pos(x, y))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
